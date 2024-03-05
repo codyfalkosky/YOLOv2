@@ -4,8 +4,6 @@ import tensorflow as tf
 from tqdm.notebook import tqdm
 from IPython.display import clear_output
 
-# +
-opt = tf.keras.optimizers.Adam()
 
 class Training:
 
@@ -13,7 +11,7 @@ class Training:
         self.init         = True
         self.parent_obj   = parent_obj
         self.loss_history = []
-        # self.optimizer    = tf.keras.optimizers.Adam()
+        self.optimizer    = tf.keras.optimizers.Adam()
 
 
     @tf.function
@@ -23,8 +21,7 @@ class Training:
             loss      = self.parent_obj.loss(model_out, batch['labels'], batch['boxes'])
 
         gradients = tape.gradient(loss, self.parent_obj.model.trainable_variables)
-        # self.optimizer.apply_gradients(zip(gradients, self.parent_obj.model.trainable_variables))
-        opt.apply_gradients(zip(gradients, self.parent_obj.model.trainable_variables))
+        self.optimizer.apply_gradients(zip(gradients, self.parent_obj.model.trainable_variables))
 
         return loss
         
