@@ -4,11 +4,13 @@ from .data  import Data
 from .model import Yolov2Model
 from .loss import YoloLoss
 from .training import Training
+from .loading import Loading
 
 
+# +
 class YOLOv2:
     def __init__(self): 
-        self.training  = Training(self)
+        pass
 
     def build_dataset(self, filenames, batch_size):
         '''
@@ -29,7 +31,14 @@ class YOLOv2:
         self.loss = YoloLoss(model_out, batch_boxes).calc_loss
 
     def fit(self, fit_params):
+        self.training  = Training(self)
         self.training.fit(**fit_params)
+
+    def load_model(self, model_params):
+        self.loading = Loading(self)
+        self.loading.load(**model_params)
+
+    
 
 # +
 # if __name__ == '__main__':
