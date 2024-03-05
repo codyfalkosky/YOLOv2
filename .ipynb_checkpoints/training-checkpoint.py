@@ -11,7 +11,6 @@ class Training:
         self.init         = True
         self.parent_obj   = parent_obj
         self.loss_history = []
-        self.optimizer    = tf.keras.optimizers.Adam()
 
 
     @tf.function
@@ -26,8 +25,9 @@ class Training:
         return loss
         
 
-    def fit(self, filenames, batch_size, n_classes, box_shapes, steps_per_epoch):
-        if self.init:           
+    def fit(self, filenames, batch_size, n_classes, box_shapes, steps_per_epoch, learning_rate):
+        if self.init:
+            self.optimizer    = tf.keras.optimizers.Adam(learning_rate)
             self.parent_obj.build_dataset(filenames, batch_size)
             self.parent_obj.init_model(n_classes, box_shapes)
 
