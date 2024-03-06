@@ -111,6 +111,7 @@ class Predicting:
                 rect = Rectangle([x,y], w, h, fill=False, edgecolor=color, lw=4)
                 ax.add_patch(rect)
                 ax.axis('off')
+                fig.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
 
             return ax
 
