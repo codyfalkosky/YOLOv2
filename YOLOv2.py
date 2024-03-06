@@ -5,12 +5,12 @@ from .model import Yolov2Model
 from .loss import YoloLoss
 from .training import Training
 from .loading import Loading
+from .predicting import Predicting
 
 
-# +
 class YOLOv2:
     def __init__(self): 
-        pass
+        self.predicting = Predicting(self)
 
     def build_dataset(self, filenames, batch_size):
         '''
@@ -38,7 +38,22 @@ class YOLOv2:
         self.loading = Loading(self)
         self.loading.load(**model_params)
 
-    
+    def save_model(self, path):
+        self.model.save(path)
+        print(f'model saved at: {path}')
+
+    @tf.function
+    def __call__(self, x):
+        x = self.model(x, training=False)
+        return x
+
+    def predict(self, x):
+        # if not hasattr(self, 'predicting'):
+        #     self.predicting = Predicting(self)
+        x = self.predicting.predict(x)
+        return x
+
+
 
 # +
 # if __name__ == '__main__':
