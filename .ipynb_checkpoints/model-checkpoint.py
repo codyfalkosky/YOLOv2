@@ -78,7 +78,20 @@ def transform_output(model_out, anchor_priors):
 
 
 class Yolov2Model:
+    '''
+    Defines will YOLOv2 model with anchor boxes and output transformations
+    '''
     def __init__(self, n_classes, anchor_prior_shapes):
+        '''
+        Args:
+            n_classes (int): number of classes for model to recognize 
+            anchor_prior_shapes (list): in format [ [h, w], [h, w] ... ]
+                h, w as float fraction of the whole for example given an output size of 13,13 a
+                height of 7 would be represented at .5.
+
+        Returns:
+            model : at self.model
+        '''
         self.anchor_priors = build_anchor_priors(13, 13, anchor_prior_shapes)
         self.model         = self.build_model(n_classes, len(anchor_prior_shapes))
 

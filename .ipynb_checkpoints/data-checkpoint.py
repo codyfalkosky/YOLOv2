@@ -25,7 +25,7 @@ class Data:
 
     '''
     def __init__(self, filenames, batch_size):
-        self.strategy   = tf.distribute.get_strategy()
+        # self.strategy   = tf.distribute.get_strategy()
         self.build_dataset(filenames, batch_size)
 
     @staticmethod
@@ -64,7 +64,7 @@ class Data:
 
 
     def build_dataset(self, filenames, batch_size):
-        batch_size = batch_size * self.strategy.num_replicas_in_sync
+        # batch_size = batch_size * self.strategy.num_replicas_in_sync
 
         self.data = tf.data.Dataset.from_tensor_slices(filenames)
         self.data = self.data.interleave(Data.read_tfrecord, cycle_length=tf.data.experimental.AUTOTUNE, num_parallel_calls=tf.data.experimental.AUTOTUNE)
@@ -73,7 +73,7 @@ class Data:
         self.data = self.data.repeat()
         self.data = self.data.batch(batch_size, drop_remainder=False, num_parallel_calls=tf.data.experimental.AUTOTUNE, deterministic=False)
         self.data = self.data.prefetch(tf.data.experimental.AUTOTUNE)
-        self.data = self.strategy.experimental_distribute_dataset(self.data)
+        # self.data = self.strategy.experimental_distribute_dataset(self.data)
 
 
 if __name__ == '__main__':

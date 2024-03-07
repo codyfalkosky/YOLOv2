@@ -8,7 +8,6 @@ from .loading import Loading
 from .predicting import Predicting
 
 
-# +
 class YOLOv2:
     def __init__(self): 
         self.predicting = Predicting(self)
@@ -32,29 +31,78 @@ class YOLOv2:
         self.loss = YoloLoss(model_out, batch_boxes).calc_loss
 
     def fit(self, fit_params):
+        '''
+        to train YOLOv2 model
+
+        Args:
+            fit_params (dictionary) : parameters for training like 
+            {
+                filenames (list): ['path/to/1.tfrecord', 'path/to/2.tfrecord' ...]
+                    see training.py for more on tfrecords
+                batch_size (int): chosen batch size
+                n_classes (int): number of classes in training data
+                box_shapes (list): in format [ [h, w], [h, w] ... ]
+                    h, w as float fraction of the whole for example given an output size of 13,13 a
+                    height of 7 would be represented at .5.
+                steps_per_epoch (int) : number of training steps in 1 epoch
+                learning_rate (float or schedule) : can be a simple float like 0.001 or 1e-3, 
+                    or a schedule like tf.keras.optimizers.schedules.PolynomialDecay()
+                save_best_folder (str) : path to save best models to, if blank training will NOT save best models
+            }
+        '''
         self.training  = Training(self)
         self.training.fit(**fit_params)
 
     def load_model(self, model_params):
+        '''
+        to load YOLOv2 model
+
+        Args:
+            model_params (dictionary) : model parameters like
+            {
+            n_classes (int): number of classes to predict
+            anchor_prior_shapes (list): in format [ [h, w], [h, w] ... ]
+                h, w as float fraction of the whole for example given an output size of 13,13 a
+                height of 7 would be represented at .5.
+            weights_path (str) : 'path/to/weight.h5'
+            }
+        '''
         self.loading = Loading(self)
         self.loading.load(**model_params)
 
     def save_model(self, path):
+        '''
+        saves model to path
+
+        Args:
+            path (str) : "path/to/saved_model.h5"
+        '''
         self.model.save(path)
         print(f'model saved at: {path}')
 
     @tf.function
     def __call__(self, x):
+        '''
+        basic forward pass
+
+        x -> model -> x
+        '''
         x = self.model(x, training=False)
         return x
 
     def predict(self, x):
-        # if not hasattr(self, 'predicting'):
-        #     self.predicting = Predicting(self)
+        '''
+        Basic YOLO forward pass on a batch of images.  Handles batching and resizing images.
+
+        Args:
+            images_paths (list) : ["path/to/img1.jpg", "path/to/img2.jpg", ...]
+        Returns:
+            Out (tensor) : YOLOv2 model output shape (batch, 13, 13, n_anchors, 5+n_classes)
+        '''
         x = self.predicting.predict(x)
         return x
 
-    
+
 
 # +
 # if __name__ == '__main__':
