@@ -56,7 +56,7 @@ class Training:
                 
                 clear_output(wait=True)
 
-                plt.title(f"Last Epoch Loss: {train_loss:.2f}")
+                plt.title(f"Last Epoch Loss: {train_loss:.5f}")
                 plt.plot(self.loss_history)
                 plt.ylim([0, 0.5])
                 plt.show()
