@@ -6,6 +6,9 @@ from IPython.display import clear_output
 
 
 class Training:
+    '''
+    for training YOLOv2 model
+    '''
 
     def __init__(self, parent_obj):
         self.init         = True
@@ -25,7 +28,7 @@ class Training:
         return loss
         
 
-    def fit(self, filenames, batch_size, n_classes, box_shapes, steps_per_epoch, learning_rate):
+    def fit(self, filenames, batch_size, n_classes, box_shapes, steps_per_epoch, learning_rate, save_best_folder=''):
         if self.init:
             self.optimizer    = tf.keras.optimizers.Adam(learning_rate)
             self.parent_obj.build_dataset(filenames, batch_size)
@@ -53,6 +56,13 @@ class Training:
                 train_loss = total_loss / steps_per_epoch
                 self.loss_history.append(train_loss)
                 total_loss = np.array(0.)
+
+                if save_best_folder:
+                    if self.loss_history[-1] == np.array(self.loss_history).min():
+                        str_loss = f"{self.loss_history[-1]:.5f}"
+                        str_loss = str_loss.replace('.', '')
+                        self.parent_obj.save_model(f"{save_best_folder}/yolov2_model{str_loss}/.h5")
+                        
                 
                 clear_output(wait=True)
 

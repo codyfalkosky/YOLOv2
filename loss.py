@@ -13,9 +13,23 @@ class YoloLoss:
     '''
     
     def __init__(self, model_out, batch_boxes):
+        '''
+        initalized yolo_loss to model specs
+
+        Args:
+            model_out (tensor) : model output shape (batch, 13, 13, n_anchor_boxes, 5+n_classes)
+            batch_boxes (tensor) : from data labels, batch['boxes']
+        '''
         self.init(model_out, batch_boxes)
 
     def init(self, model_out, batch_boxes):
+        '''
+        Stores all shapes and sizes for building loss equation
+        
+        Args:
+            model_out (tensor) : model output shape (batch, 13, 13, n_anchor_boxes, 5+n_classes)
+            batch_boxes (tensor) : from data labels, batch['boxes']
+        '''
         self.shapes = {}
         self.shapes['m_b']  = model_out.shape[0]
         self.shapes['m_h']  = model_out.shape[1]
@@ -32,6 +46,19 @@ class YoloLoss:
         self.sizes['m+b'] = self.sizes['m_unbtch_flat'] + self.sizes['b_unbtch_flat']
         
     def _package(self, model_out, batch_boxes):
+        '''
+        flattens model_output and labeled boxes in to (b, -1) shape tensor for accelerated computation
+
+        Args:
+            model_out (tensor) : model output shape (batch, 13, 13, n_anchor_boxes, 5+n_classes)
+            batch_boxes (tensor) : from data labels, batch['boxes']
+
+        Returns:
+            packaged (tensor) : shape (b, -1) model_output and labeled boxes concatenated to single tensor
+                to be sent to map_fn as elem where each elem is along batch dimension containing a full model output
+                and labels boxes in a flattened tensor
+        
+        '''
         b = model_out.shape[0]
         flat_model_out = tf.reshape(model_out,   (b, -1))
         flat_boxes     = tf.reshape(batch_boxes, (b, -1))
@@ -43,6 +70,18 @@ class YoloLoss:
         return packaged
     
     def _unpackage(self, elem):
+        '''
+        Restores single batch flattened tensor containing [model_out and labeled_boxes] to original shape for calculation
+
+        Args:
+            elem (tensor) : shape (-1, ) concatenated tensor containing [model_out, labeled_boxes]
+        
+        Returns:
+            model_out_no_batch (tensor) : shape (13, 13, n_anchor_boxes, 5+n_classes)
+            gt_bbox (tensor) : shape (n_boxes, coords)
+            batch_no (tensor) : shape () integer defining current batch_no
+            
+        '''
         m_h  = self.shapes['m_h']
         m_w  = self.shapes['m_w']
         m_an = self.shapes['m_an']
@@ -154,6 +193,17 @@ class YoloLoss:
         return obj_idxs, noobj_idxs, ious
 
     def calc_loss(self, model_out, gt_labels, gt_boxes):
+        '''
+        main function of class for calculating YOLOv2 model loss
+
+        Args:
+            model_out (tensor) : model output shape (batch, 13, 13, n_anchor_boxes, 5+n_classes)
+            gt_labels (tensor) : from annotations, shape (n_labels, ) with padding
+            gt_boxes (tensor) : from annotations, shape (n_boxes, coords_cxcywh) with padding
+        Returns:
+            loss (tensor) : scalar loss for batch
+            
+        '''
     
         # PARSE ANNOTATIONS
         _, h, w, *_  = model_out.shape
@@ -195,6 +245,7 @@ class YoloLoss:
         return loss
 
 
+# for testing
 if __name__ == '__main__':
     # init class
     yolov2 = YOLOv2()

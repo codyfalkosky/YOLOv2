@@ -174,8 +174,7 @@ class Boxes:
         scaled = tf.where(boxes==-1, -1., scaled)
         return scaled
 
-
-
+# function tests
 if __name__ == '__main__':
 
     boxes1 = tf.convert_to_tensor([[
@@ -211,5 +210,3 @@ if __name__ == '__main__':
     print()
     print('boxes.scale:')
     print(boxes.scale(t1, 100, 100))
-
-
