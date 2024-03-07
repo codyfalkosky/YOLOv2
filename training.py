@@ -58,7 +58,7 @@ class Training:
 
                 plt.title(f"Last Epoch Loss: {train_loss:.5f}")
                 plt.plot(self.loss_history)
-                plt.ylim([0, 0.5])
+                plt.ylim([0, self.loss_history[-1]*2])
                 plt.show()
 
                 pbar = tqdm(total=steps_per_epoch)
