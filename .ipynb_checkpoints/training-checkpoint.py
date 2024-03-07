@@ -61,7 +61,7 @@ class Training:
                     if self.loss_history[-1] == np.array(self.loss_history).min():
                         str_loss = f"{self.loss_history[-1]:.5f}"
                         str_loss = str_loss.replace('.', '')
-                        self.parent_obj.save_model(f"{save_best_folder}/yolov2_model{str_loss}/.h5")
+                        self.parent_obj.save_model(f"{save_best_folder}/yolov2_model_{str_loss}.h5")
                         
                 
                 clear_output(wait=True)
