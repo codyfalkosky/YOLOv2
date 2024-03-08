@@ -60,14 +60,26 @@ class Training:
         return loss
 
     def save_best(self, save_best_folder):
+        '''
+        saves best model to save_best_folder, if save_best_folder = '' does nothing
+
+        Args:
+            save_best_folder (str) : like "path/to/save/folder" # no final forward-slash
+        Returns:
+            model saved to save_best_folder/yolov2_model_{str_loss}.h5"
+        '''
 
         if save_best_folder:
-            if self.valid_loss[-1] == np.array(self.valid_loss).min():
+            if self.valid_loss[-1] == min(self.valid_loss):
                 str_loss = f"{self.valid_loss[-1]:.5f}"
                 str_loss = str_loss.replace('.', '')
                 self.parent_obj.save_model(f"{save_best_folder}/yolov2_model_{str_loss}.h5")
 
     def plot_loss(self):
+        '''
+        for visualization during trianing
+        displays train and valid loss
+        '''
         clear_output(wait=True)
 
         plt.title(f"Last Epoch Valid Loss: {self.valid_loss[-1]:.5f}")
@@ -75,9 +87,28 @@ class Training:
         plt.plot(self.valid_loss,  color='C1')
         plt.ylim([0, self.valid_loss[-1]*3])
         plt.show()
+
+    def break_on_epoch(self, epochs):
+        '''
+        for stopping training at the end of a number of epochs
+
+        Args:
+            epochs (int) : total number of epochs to run
+        Returns:
+            bool : True if current epoch >= epochs - triggering a break
+        '''
+        if epochs:
+            if len(self.train_loss) >= epochs:
+                return True
+            else:
+                return False
+
+        else:
+            return False
+            
         
 
-    def fit(self, train_filenames, valid_filenames, batch_size, n_classes, box_shapes, steps_per_epoch, learning_rate, save_best_folder=''):
+    def fit(self, train_filenames, valid_filenames, batch_size, n_classes, box_shapes, learning_rate, save_best_folder='', epochs=None):
         '''
         all in one function to train a YOLOv2 model from a list of tfrecords
 
@@ -151,7 +182,7 @@ class Training:
     
             # plot loss
             self.plot_loss()
-        
-                        
-                
 
+            if self.break_on_epoch(epochs):
+                break
+                
