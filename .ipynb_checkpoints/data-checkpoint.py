@@ -70,7 +70,7 @@ class Data:
         self.data = self.data.interleave(Data.read_tfrecord, cycle_length=tf.data.experimental.AUTOTUNE, num_parallel_calls=tf.data.experimental.AUTOTUNE)
         self.data = self.data.map(self.parse_tfrecord_fn, num_parallel_calls=tf.data.experimental.AUTOTUNE, deterministic=False)
         self.data = self.data.cache()
-        self.data = self.data.repeat()
+        # self.data = self.data.repeat()
         self.data = self.data.batch(batch_size, drop_remainder=False, num_parallel_calls=tf.data.experimental.AUTOTUNE, deterministic=False)
         self.data = self.data.prefetch(tf.data.experimental.AUTOTUNE)
         # self.data = self.strategy.experimental_distribute_dataset(self.data)

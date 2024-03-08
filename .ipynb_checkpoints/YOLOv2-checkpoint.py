@@ -12,11 +12,17 @@ class YOLOv2:
     def __init__(self): 
         self.predicting = Predicting(self)
 
-    def build_dataset(self, filenames, batch_size):
+    def build_train_dataset(self, filenames, batch_size):
         '''
         builds dataset that iterates {'image':image, 'labels':labels, 'boxes':boxes}
         '''
-        self.training_dataset = Data(filenames, batch_size).data
+        self.train_dataset = Data(filenames, batch_size).data
+
+    def build_valid_dataset(self, filenames, batch_size):
+        '''
+        builds dataset that iterates {'image':image, 'labels':labels, 'boxes':boxes}
+        '''
+        self.valid_dataset = Data(filenames, batch_size).data
 
     def init_model(self, n_classes, anchor_prior_shapes):
         '''
