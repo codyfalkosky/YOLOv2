@@ -54,7 +54,7 @@ class Training:
             loss (tensor) : scalar loss
         '''
 
-        model_out = self.parent_obj.model(batch['image'], training=False)
+        model_out = self.parent_obj(batch['image'])
         loss      = self.parent_obj.loss(model_out, batch['labels'], batch['boxes'])
 
         return loss
@@ -108,7 +108,7 @@ class Training:
             
         
 
-    def fit(self, train_filenames, valid_filenames, batch_size, n_classes, box_shapes, learning_rate, save_best_folder='', epochs=None):
+    def fit(self, train_filenames, valid_filenames, batch_size, n_classes, box_shapes, learning_rate, save_best_folder='', stop_at_epoch=None):
         '''
         all in one function to train a YOLOv2 model from a list of tfrecords
 
@@ -183,6 +183,6 @@ class Training:
             # plot loss
             self.plot_loss()
 
-            if self.break_on_epoch(epochs):
+            if self.break_on_epoch(stop_at_epoch):
                 break
                 

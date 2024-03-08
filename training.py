@@ -54,7 +54,7 @@ class Training:
             loss (tensor) : scalar loss
         '''
 
-        model_out = self.parent_obj.model(batch['image'], training=False)
+        model_out = self.parent_obj(batch['image'])
         loss      = self.parent_obj.loss(model_out, batch['labels'], batch['boxes'])
 
         return loss
