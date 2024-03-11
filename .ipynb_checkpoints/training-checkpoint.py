@@ -173,7 +173,7 @@ class Training:
             for batch in tqdm(self.parent_obj.valid_dataset, total=valid_len):
                 b_len       = len(batch['image'])
                 loss        = self.valid_step(batch)
-                last_valid.append([loss.numpy()])
+                last_valid.append(loss.numpy())
                 # self.valid_metric.update_state(loss, sample_weight=b_len)
                 # self.valid_metric.update_state(loss)
 
