@@ -169,8 +169,8 @@ class Training:
             # valid epoch
             print('Valid Epoch')
             for batch in tqdm(self.parent_obj.valid_dataset, total=valid_len):
-                b_len       = len(batch)
-                loss        = self.valid_step(batch['image'])
+                b_len       = len(batch['image'])
+                loss        = self.valid_step(batch)
                 self.valid_metric.update_state([loss], sample_weight=[b_len])
     
             # append training loss and reset
