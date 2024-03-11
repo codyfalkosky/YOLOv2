@@ -85,6 +85,12 @@ class Training:
         plt.title(f"Last Epoch Valid Loss: {self.valid_loss[-1]:.5f}")
         plt.plot(self.train_loss,  color='C0')
         plt.plot(self.valid_loss,  color='C1')
+
+        min_idx = np.array(self.valid_loss).argmin()
+        min_val = np.array(self.valid_loss).min()
+        
+        plt.scatter(min_idx, min_val, marker='x', color='C3')
+        plt.text(min_idx, min_val, round(min_val, 4), fontsize='x-small', ha='left', va='top')
         plt.ylim([0, self.valid_loss[-1]*3])
         plt.show()
 
