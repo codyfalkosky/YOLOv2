@@ -20,8 +20,8 @@ class Training:
         self.train_loss   = []
         self.valid_loss   = []
 
-        self.train_metric = tf.keras.metrics.Mean()
-        self.valid_metric = tf.keras.metrics.Mean()
+        # self.train_metric = tf.keras.metrics.Mean()
+        # self.valid_metric = tf.keras.metrics.Mean()
 
 
     @tf.function
@@ -161,9 +161,12 @@ class Training:
             print(last_valid)
             # training epoch
             print('Training Epoch')
+            last_train = []
             for batch in tqdm(self.parent_obj.train_dataset, total=train_len):
-                loss        = self.train_step(batch)
-                self.train_metric.update_state(loss)
+                loss = self.train_step(batch)
+                last_train.append(loss.numpy())
+
+            self.train_loss.append(np.array(last_train).mean())
     
             # valid epoch
             print('Valid Epoch')
@@ -171,19 +174,8 @@ class Training:
             for batch in tqdm(self.parent_obj.valid_dataset, total=valid_len):
                 loss        = self.valid_step(batch)
                 last_valid.append(loss.numpy())
-                # b_len       = len(batch['image'])
-                # self.valid_metric.update_state(loss, sample_weight=b_len)
-                # self.valid_metric.update_state(loss)
 
             self.valid_loss.append(max(last_valid))
-    
-            # append training loss and reset
-            self.train_loss.append(self.train_metric.result().numpy())
-            self.train_metric.reset_states()
-    
-            # # append valid loss and reset
-            # self.valid_loss.append(self.valid_metric.result().numpy())
-            # self.valid_metric.reset_states()
     
             # save best model based on valid loss
             self.save_best(save_best_folder)

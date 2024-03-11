@@ -206,7 +206,7 @@ class YoloLoss:
         '''
     
         # PARSE ANNOTATIONS
-        _, h, w, *_  = model_out.shape
+        weight, h, w, *_  = model_out.shape
         gt_bboxes    = Boxes.scale(gt_boxes, w, h)
         gt_classes   = gt_labels
     
@@ -242,7 +242,7 @@ class YoloLoss:
     
         loss = l_obj + 5*l_bxby + l_bwbh + l_bcls + 0.5*l_bnbj
     
-        return loss
+        return loss, weight
 
 
 # for testing
