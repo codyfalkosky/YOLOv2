@@ -163,10 +163,7 @@ class Training:
             print('Training Epoch')
             for batch in tqdm(self.parent_obj.train_dataset, total=train_len):
                 loss        = self.train_step(batch)
-
-                weight = len(batch['image'])
-                self.train_metric.update_state(loss, weight)
-                # self.train_metric.update_state(loss)
+                self.train_metric.update_state(loss)
     
             # valid epoch
             print('Valid Epoch')
