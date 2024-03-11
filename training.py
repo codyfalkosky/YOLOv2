@@ -162,18 +162,19 @@ class Training:
             # training epoch
             print('Training Epoch')
             for batch in tqdm(self.parent_obj.train_dataset, total=train_len):
-                # b_len       = len(batch['image'])
                 loss        = self.train_step(batch)
-                # self.train_metric.update_state([loss], sample_weight=[b_len])
-                self.train_metric.update_state(loss)
+
+                weight = len(batch['image'])
+                self.train_metric.update_state(loss, weight)
+                # self.train_metric.update_state(loss)
     
             # valid epoch
             print('Valid Epoch')
             last_valid = []
             for batch in tqdm(self.parent_obj.valid_dataset, total=valid_len):
-                # b_len       = len(batch['image'])
                 loss        = self.valid_step(batch)
                 last_valid.append(loss.numpy())
+                # b_len       = len(batch['image'])
                 # self.valid_metric.update_state(loss, sample_weight=b_len)
                 # self.valid_metric.update_state(loss)
 
