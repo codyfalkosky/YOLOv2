@@ -20,8 +20,8 @@ class Training:
         self.train_loss   = []
         self.valid_loss   = []
 
-        # self.train_metric = tf.keras.metrics.Mean()
-        # self.valid_metric = tf.keras.metrics.Mean()
+        self.train_metric = tf.keras.metrics.Mean()
+        self.valid_metric = tf.keras.metrics.Mean()
 
 
     @tf.function
@@ -114,8 +114,8 @@ class Training:
             
         
 
-    def fit(self, train_filenames, valid_filenames, batch_size, n_classes, box_shapes, 
-            learning_rate, save_best_folder='', stop_at_epoch=None):
+    def fit(self, train_filenames, valid_filenames, train_batch_size, valid_batch_size, n_classes, box_shapes, 
+            optimizer, save_best_folder='', stop_at_epoch=None, train_steps_per_epoch, valid_steps_per_epoch):
         '''
         all in one function to train a YOLOv2 model from a list of tfrecords
 
@@ -140,48 +140,42 @@ class Training:
             
         '''
         if self.init:
-            self.optimizer    = tf.keras.optimizers.Adam(learning_rate)
-            self.parent_obj.build_train_dataset(train_filenames, batch_size)
-            self.parent_obj.build_valid_dataset(valid_filenames, batch_size)
+            self.optimizer    = optimizer
+            self.parent_obj.build_train_dataset(train_filenames, train_batch_size)
+            self.parent_obj.build_valid_dataset(valid_filenames, valid_batch_size)
             self.parent_obj.init_model(n_classes, box_shapes)
 
-            print('Loading Train Data')
-            train_len = 0
             for train_batch in tqdm(self.parent_obj.train_dataset):
-                if train_len == 0:
                     batch = train_batch
-                train_len += 1
-
-            print('Loading Valid Data')
-            valid_len = 0
-            for test_batch in tqdm(self.parent_obj.valid_dataset):
-                valid_len += 1
+                    break
 
             model_out = self.parent_obj.model(batch['image'])      
             self.parent_obj.init_loss_(model_out, batch['boxes'])
 
             self.init = False
 
-        last_valid = []
+
         while True:
-            print(last_valid)
+
             # training epoch
             print('Training Epoch')
-            last_train = []
-            for batch in tqdm(self.parent_obj.train_dataset, total=train_len):
+            for batch in tqdm(self.parent_obj.train_dataset.take(train_steps_per_epoch), total=train_steps_per_epoch)):
                 loss = self.train_step(batch)
-                last_train.append(loss.numpy())
-
-            self.train_loss.append(np.array(last_train).mean())
+                self.train_metric.update_state(loss)
     
             # valid epoch
             print('Valid Epoch')
-            last_valid = []
-            for batch in tqdm(self.parent_obj.valid_dataset, total=valid_len):
-                loss        = self.valid_step(batch)
-                last_valid.append(loss.numpy())
+            for batch in tqdm(self.parent_obj.valid_dataset.take(valid_steps_per_epoch), total=valid_steps_per_epoch):
+                loss = self.valid_step(batch)
+                self.valid_metric.update_state(loss)
 
-            self.valid_loss.append(max(last_valid))
+            # record train loss and reset
+            self.train_loss.append(self.train_metric.result().numpy())
+            self.train_loss.reset_states()
+
+            # record valid loss and reset
+            self.valid_loss.append(self.valid_metric.result().numpy())
+            self.valid_loss.reset_states()
     
             # save best model based on valid loss
             self.save_best(save_best_folder)
