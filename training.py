@@ -115,7 +115,7 @@ class Training:
         
 
     def fit(self, train_filenames, valid_filenames, train_batch_size, valid_batch_size, n_classes, box_shapes, 
-            optimizer, save_best_folder='', stop_at_epoch=None, train_steps_per_epoch, valid_steps_per_epoch):
+            optimizer, train_steps_per_epoch, valid_steps_per_epoch, save_best_folder='', stop_at_epoch=None,):
         '''
         all in one function to train a YOLOv2 model from a list of tfrecords
 
