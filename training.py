@@ -41,7 +41,8 @@ class Training:
         gradients = tape.gradient(loss, self.parent_obj.model.trainable_variables)
         self.optimizer.apply_gradients(zip(gradients, self.parent_obj.model.trainable_variables))
 
-        return loss
+        self.train_metric.update_state(loss, sample_weight=model_out.shape[0])
+        
 
     @tf.function
     def valid_step(self, batch):
@@ -56,8 +57,9 @@ class Training:
 
         model_out = self.parent_obj(batch['image'])
         loss      = self.parent_obj.loss(model_out, batch['labels'], batch['boxes'])
+        
+        self.valid_metric.update_state(loss, sample_weight=model_out.shape[0])
 
-        return loss
 
     def save_best(self, save_best_folder):
         '''
@@ -114,8 +116,8 @@ class Training:
             
         
 
-    def fit(self, train_filenames, valid_filenames, train_batch_size, valid_batch_size, n_classes, box_shapes, 
-            optimizer, train_steps_per_epoch, valid_steps_per_epoch, save_best_folder='', stop_at_epoch=None,):
+    def fit(self, train_filenames, valid_filenames, batch_size, n_classes, box_shapes, 
+            optimizer, save_best_folder='', stop_at_epoch=None):
         '''
         all in one function to train a YOLOv2 model from a list of tfrecords
 
@@ -134,20 +136,28 @@ class Training:
                 h, w as float fraction of the whole for example given an output size of 13,13 a
                 height of 7 would be represented at .5.
             steps_per_epoch (int) : number of training steps in 1 epoch
-            learning_rate (float or schedule) : can be a simple float like 0.001 or 1e-3, 
-                or a schedule like tf.keras.optimizers.schedules.PolynomialDecay()
+            # learning_rate (float or schedule) : can be a simple float like 0.001 or 1e-3, 
+            #     or a schedule like tf.keras.optimizers.schedules.PolynomialDecay()
             save_best_folder (str) : path to save best models to, if blank training will NOT save best models
             
         '''
         if self.init:
             self.optimizer    = optimizer
-            self.parent_obj.build_train_dataset(train_filenames, train_batch_size)
-            self.parent_obj.build_valid_dataset(valid_filenames, valid_batch_size)
+            self.parent_obj.build_train_dataset(train_filenames, batch_size)
+            self.parent_obj.build_valid_dataset(valid_filenames, batch_size)
             self.parent_obj.init_model(n_classes, box_shapes)
 
+            print('Loading Train Data')
+            train_len = 0
             for train_batch in tqdm(self.parent_obj.train_dataset):
+                if train_len == 0:
                     batch = train_batch
-                    break
+                train_len += 1
+
+            print('Loading Valid Data')
+            valid_len = 0
+            for test_batch in tqdm(self.parent_obj.valid_dataset):
+                valid_len += 1
 
             model_out = self.parent_obj.model(batch['image'])      
             self.parent_obj.init_loss_(model_out, batch['boxes'])
@@ -156,26 +166,24 @@ class Training:
 
 
         while True:
-
             # training epoch
             print('Training Epoch')
-            for batch in tqdm(self.parent_obj.train_dataset.take(train_steps_per_epoch), total=train_steps_per_epoch):
-                loss = self.train_step(batch)
-                self.train_metric.update_state(loss)
+            for batch in tqdm(self.parent_obj.train_dataset, total=train_len):
+                self.train_step(batch)
     
             # valid epoch
             print('Valid Epoch')
-            for batch in tqdm(self.parent_obj.valid_dataset.take(valid_steps_per_epoch), total=valid_steps_per_epoch):
-                loss = self.valid_step(batch)
-                self.valid_metric.update_state(loss)
+            for batch in tqdm(self.parent_obj.valid_dataset, total=valid_len):
+                loss        = self.valid_step(batch)
 
-            # record train loss and reset
+
+            # record and reset train metric
             self.train_loss.append(self.train_metric.result().numpy())
-            self.train_loss.reset_states()
+            self.train_metric.reset_states()
 
-            # record valid loss and reset
+            # record and reset valid metric
             self.valid_loss.append(self.valid_metric.result().numpy())
-            self.valid_loss.reset_states()
+            self.valid_metric.reset_states()
     
             # save best model based on valid loss
             self.save_best(save_best_folder)
