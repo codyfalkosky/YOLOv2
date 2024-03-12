@@ -159,7 +159,7 @@ class Training:
 
             # training epoch
             print('Training Epoch')
-            for batch in tqdm(self.parent_obj.train_dataset.take(train_steps_per_epoch), total=train_steps_per_epoch)):
+            for batch in tqdm(self.parent_obj.train_dataset.take(train_steps_per_epoch), total=train_steps_per_epoch):
                 loss = self.train_step(batch)
                 self.train_metric.update_state(loss)
     
