@@ -61,7 +61,7 @@ class Training:
         self.valid_metric.update_state(loss, sample_weight=model_out.shape[0])
 
 
-    def save_best(self, save_best_folder):
+    def save_best(self, save_best_folder, save_below):
         '''
         saves best model to save_best_folder, if save_best_folder = '' does nothing
 
@@ -73,9 +73,10 @@ class Training:
 
         if save_best_folder:
             if self.valid_loss[-1] == min(self.valid_loss):
-                str_loss = f"{self.valid_loss[-1]:.5f}"
-                str_loss = str_loss.replace('.', '')
-                self.parent_obj.save_model(f"{save_best_folder}/yolov2_model_{str_loss}.h5")
+                if self.valid_loss[-1] < save_below:
+                    str_loss = f"{self.valid_loss[-1]:.5f}"
+                    str_loss = str_loss.replace('.', '')
+                    self.parent_obj.save_model(f"{save_best_folder}/yolov2_model_{str_loss}.h5")
 
     def plot_loss(self):
         '''
@@ -117,7 +118,7 @@ class Training:
         
 
     def fit(self, train_filenames, valid_filenames, batch_size, n_classes, box_shapes, 
-            optimizer, save_best_folder='', stop_at_epoch=None):
+            optimizer, save_below=0.1, save_best_folder='', stop_at_epoch=None):
         '''
         all in one function to train a YOLOv2 model from a list of tfrecords
 
@@ -186,7 +187,7 @@ class Training:
             self.valid_metric.reset_states()
     
             # save best model based on valid loss
-            self.save_best(save_best_folder)
+            self.save_best(save_best_folder, save_below)
     
             # plot loss
             self.plot_loss()
