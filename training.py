@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 from tqdm.notebook import tqdm
 from IPython.display import clear_output
+import pickle
 
 
 class Training:
@@ -118,6 +119,14 @@ class Training:
     def save_checkpoint(self, save_dir, at_every_epoch_interval):
         if len(self.train_loss) % at_every_epoch_interval == 0:
             self.checkpoint.save(save_dir)
+            self.save_loss(save_dir)
+
+    def save_loss(self, save_dir):
+        history = {'train loss':self.train_loss,
+                   'valid loss':self.valid_loss}
+
+        with open(f'{save_dir}/history.pkl', 'wb') as file:
+            pickle.dump(training_run, file)
             
         
 
@@ -201,6 +210,7 @@ class Training:
             # save best model based on valid loss
             self.save_best(save_best_folder, save_below)
 
+            # save optimizer and model checkpoint
             self.save_checkpoint(save_best_folder, at_every_epoch_interval)
     
             # plot loss
