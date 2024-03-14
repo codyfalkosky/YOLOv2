@@ -118,7 +118,7 @@ class Training:
 
     def save_checkpoint(self, save_dir, at_every_epoch_interval):
         if len(self.train_loss) % at_every_epoch_interval == 0:
-            self.checkpoint.save(save_dir+'/)
+            self.checkpoint.save(save_dir+'/')
             self.save_loss(save_dir)
 
     def save_loss(self, save_dir):
