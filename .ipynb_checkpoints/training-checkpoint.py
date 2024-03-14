@@ -114,11 +114,15 @@ class Training:
 
         else:
             return False
+
+    def save_checkpoint(self, save_dir, at_every_epoch_interval):
+        if len(self.train_loss) % at_every_epoch_interval == 0:
+            self.checkpoint.save(save_dir)
             
         
 
     def fit(self, train_filenames, valid_filenames, batch_size, n_classes, box_shapes, 
-            optimizer, save_below=0.1, save_best_folder='', stop_at_epoch=None):
+            optimizer, save_below=0.1, save_best_folder='', stop_at_epoch=None, checkpoint=None, at_every_epoch_interval=50):
         '''
         all in one function to train a YOLOv2 model from a list of tfrecords
 
@@ -163,6 +167,14 @@ class Training:
             model_out = self.parent_obj.model(batch['image'])      
             self.parent_obj.init_loss_(model_out, batch['boxes'])
 
+
+            self.checkpoint = tf.train.Checkpoint(model=self.parent_obj.model,
+                                                  optimizer=self.optimizer)
+
+            if checkpoint:
+                ckpt_file = tf.train.latest_checkpoint(checkpoint)
+                self.checkpoint.restore(ckpt_file)
+
             self.init = False
 
 
@@ -188,6 +200,8 @@ class Training:
     
             # save best model based on valid loss
             self.save_best(save_best_folder, save_below)
+
+            self.save_checkpoint(save_best_folder, at_every_epoch_interval)
     
             # plot loss
             self.plot_loss()
