@@ -126,7 +126,7 @@ class Training:
                    'valid loss':self.valid_loss}
 
         with open(f'{save_dir}/history.pkl', 'wb') as file:
-            pickle.dump(training_run, file)
+            pickle.dump(history, file)
             
         
 
