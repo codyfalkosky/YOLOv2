@@ -95,7 +95,10 @@ class Training:
         
         plt.scatter(min_idx, min_val, marker='x', color='C3')
         plt.text(min_idx, min_val, round(min_val, 4), fontsize='x-small', ha='left', va='top')
-        plt.ylim([0, self.valid_loss[-1]*3])
+        try:
+            plt.ylim([0, self.valid_loss[-1]*3])
+        except:
+            plt.ylim([0, 1])
         plt.show()
 
     def break_on_epoch(self, epochs):
