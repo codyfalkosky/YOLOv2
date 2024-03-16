@@ -130,6 +130,10 @@ class Training:
 
         with open(f'{save_dir}/history.pkl', 'wb') as file:
             pickle.dump(history, file)
+
+    def drop_lr(self, drop_thresh, new_lr):
+        if self.valid_loss[-1] < drop_thresh:
+            self.optimizer.lr.assign(new_lr)
             
         
 
@@ -218,6 +222,9 @@ class Training:
     
             # plot loss
             self.plot_loss()
+
+            # lower learning rate at valid loss threshold
+            self.drop_lr(drop_thresh=0.07, new_lr=1e-4)
 
             if self.break_on_epoch(stop_at_epoch):
                 break
