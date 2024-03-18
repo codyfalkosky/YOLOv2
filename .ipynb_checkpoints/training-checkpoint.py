@@ -224,7 +224,7 @@ class Training:
             self.plot_loss()
 
             # lower learning rate at valid loss threshold
-            self.drop_lr(drop_thresh=0.07, new_lr=1e-4)
+            # self.drop_lr(drop_thresh=0.07, new_lr=1e-4)
 
             if self.break_on_epoch(stop_at_epoch):
                 break
