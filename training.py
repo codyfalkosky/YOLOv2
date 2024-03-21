@@ -138,7 +138,8 @@ class Training:
         
 
     def fit(self, train_filenames, valid_filenames, batch_size, n_classes, box_shapes, 
-            optimizer, save_below=0.1, save_best_folder='', stop_at_epoch=None, checkpoint=None, at_every_epoch_interval=50):
+            optimizer, save_below=0.1, save_best_folder='', stop_at_epoch=None, checkpoint=None, at_every_epoch_interval=50,
+            load_model=None):
         '''
         all in one function to train a YOLOv2 model from a list of tfrecords
 
@@ -167,6 +168,10 @@ class Training:
             self.parent_obj.build_train_dataset(train_filenames, batch_size)
             self.parent_obj.build_valid_dataset(valid_filenames, batch_size)
             self.parent_obj.init_model(n_classes, box_shapes)
+
+            if load_model:
+                self.parent_obj.model.load_weights(load_model)
+                
 
             print('Loading Train Data')
             train_len = 0
@@ -204,7 +209,6 @@ class Training:
             print('Valid Epoch')
             for batch in tqdm(self.parent_obj.valid_dataset, total=valid_len):
                 loss        = self.valid_step(batch)
-
 
             # record and reset train metric
             self.train_loss.append(self.train_metric.result().numpy())
