@@ -60,6 +60,19 @@ class Predicting:
         out     = self.parent_obj(batched)
         return out
 
+    def images_predict(self, image_paths):
+        '''
+        Basic YOLO forward pass on a batch of images.
+
+        Args:
+            images_paths (list) : ["path/to/img1.jpg", "path/to/img2.jpg", ...]
+        Returns:
+            Out (tensor) : YOLOv2 model output shape (batch, 13, 13, n_anchors, 5+n_classes)
+        '''
+        batched = self.batch_images_to_batch_tensor(image_paths)
+        out     = self.parent_obj(batched)
+        return batched, out
+
     def output_nms(self, image, out):
         '''
         Handles non-max suppression on YOLOv2 output for a single batch and scales predictions to image
@@ -93,6 +106,100 @@ class Predicting:
         cls    = tf.gather(cls, indices, axis=0)
 
         return scores, boxes, cls
+
+    def _parse_output(self, output):
+        '''
+        parses YoloV2 model output into [boxes, scores, cls]
+    
+        Args:
+            output (tensor) : YoloV2 model output shape [b, 13, 13, 2, 7]
+        Returns:
+            parsed (dictionary) : {'boxes' :boxes  (tensor),
+                                   'scores':scores (tensor),
+                                   'cls'   :cls    (tensor)}
+        '''
+    
+        # extract boxes from all images
+        boxes  = output[:, :, :, :, 1:5]
+    
+        # scale to [0, 1]
+        boxes  = Boxes.scale(boxes, 1/13, 1/13)
+    
+        # convert to xyxy format
+        # boxes  = Boxes.convert(boxes, 'cxcywh_xyxy')
+    
+        # clip float errors
+        boxes  = tf.clip_by_value(boxes, 0, 1)
+    
+        # reshape to flat list
+        boxes  = tf.reshape(boxes, (-1, 13*13*2, 4))
+    
+        # extract all scores and reshape to flat list
+        scores = output[:, :, :, :, 0:1]
+        scores = tf.reshape(scores, (-1, 13*13*2))
+    
+        # extract all cls, reshape and take argmax prediction
+        cls    = output[:, :, :, :, 5:]
+        cls    = tf.reshape(cls, [-1, 13*13*2, 2])
+        cls    = tf.argmax(cls, axis=-1)
+    
+        parsed = {'boxes':boxes, 'scores':scores, 'cls':cls}
+        return parsed
+    
+    def _batched_nms_with_object_extraction(self, images, parsed):
+        '''
+        extracts and stacks objects detected by yolo, for object encoding
+    
+        Args:
+            images (tensor)     : all images used in detection sequence shape [n_img, h, w, 3]
+            parsed (dictionary) : dictionary of tensors with keys 'boxes', 'scores', 'cls'
+        Returns:
+            to_obj_encoder (dictionary) : dict of tensors for obj_encoder with keys 'objects', 'cls', 'batch_numbers'
+        '''
+        # nms to find all valid box predictions
+        nms_params = {'max_output_size':30, 'score_threshold':.6, 'pad_to_max_output_size':True}    
+        padded_indicies, valid_indicies = tf.image.non_max_suppression_padded(Boxes.convert(parsed['boxes'], 'cxcywh_xyxy'), 
+                                                                              parsed['scores'], **nms_params)
+    
+        # mask for masking out padding
+        mask = tf.range(30) < valid_indicies[:, None]
+    
+        # get image index for correponding object
+        batch_numbers    = tf.where(mask)
+        batch_numbers, _ = tf.split(batch_numbers, 2, axis=1)
+        batch_numbers    = tf.cast(batch_numbers, tf.int32)
+        batch_numbers    = tf.reshape(batch_numbers, [-1])
+    
+        # extract nms chosen boxes
+        batched_boxes = tf.gather(parsed['boxes'], padded_indicies, batch_dims=1)
+        batched_boxes = tf.boolean_mask(batched_boxes, mask)
+    
+        # extract boxes from images
+        objects = tf.image.crop_and_resize(images, batched_boxes, batch_numbers, [32, 40]) # [n_objects, 32, 40, 3]
+    
+        # extract nms chosen cls
+        cls = tf.gather(parsed['cls'], padded_indicies, batch_dims=1)
+        cls = tf.boolean_mask(cls, mask)
+    
+        to_obj_encoder = {'objects':objects, 'boxes':batched_boxes, 'cls':cls, 'batch_numbers':batch_numbers}
+        return to_obj_encoder
+
+    def to_object_encoder(self, image_paths):
+        '''
+        Basic YOLO forward pass on a batch of images.
+
+        Args:
+            images_paths (list) : ["path/to/img1.jpg", "path/to/img2.jpg", ...]
+        Returns:
+            Out (tensor) : YOLOv2 model output shape (batch, 13, 13, n_anchors, 5+n_classes)
+        '''
+        images = self.batch_images_to_batch_tensor(image_paths)
+        output = self.parent_obj(images)
+        parsed = self._parse_output(output)
+        to_obj_encoder           = self._batched_nms_with_object_extraction(images, parsed)
+        to_obj_encoder['images'] = images
+        
+        return to_obj_encoder
 
     def draw_and_save(self, image, out, save_dir):
         '''
@@ -176,4 +283,7 @@ class Predicting:
         ani.save(save_path, fps=15)
         plt.close()
         
+
+# -
+
 

@@ -108,6 +108,8 @@ class YOLOv2:
         x = self.predicting.predict(x)
         return x
 
+    def to_object_encoder(self, image_paths):
+        return self.predicting.to_object_encoder(image_paths)
 
 
 # +
