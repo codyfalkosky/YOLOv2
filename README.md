@@ -21,6 +21,9 @@
 YOLOv2 is a full TensorFlow implementation of the YOLOv2 algorithm as described in the paper "YOLO9000: Better, Faster, Stronger."  It also includes a fully trained model, and dataset I captured and labeled from my apartment window. 
 
 <div align="center">
+https://github.com/user-attachments/assets/0d488225-86c9-4917-949c-2286e6d085c9
+
+
     <video src='./video/yolo_traffic_1.mp4' width=800 autoplay loop title='actual model output from this model!'> </video><br>Raw YOLO output with NMS!<br>Yellow for Bus, Red for Vehicle
 </div>
 
