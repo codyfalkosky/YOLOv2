@@ -227,7 +227,7 @@ class Predicting:
         plt.savefig(save_dir, bbox_inches='tight', pad_inches=0.1)
         plt.close()
 
-    def predict_draw_save(self, image_paths, save_dir):
+    def predict_draw_save_images(self, image_paths, save_dir):
         '''
         Takes list of images and prints boxes to images and saves
 
@@ -265,6 +265,7 @@ class Predicting:
         
         def update(frame):
             ax.clear()
+            ax.axis('off')
             img = tf.io.read_file(image_paths[frame])
             img = tf.io.decode_image(img)
             ax.imshow(img)

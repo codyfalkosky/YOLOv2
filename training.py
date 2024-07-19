@@ -164,7 +164,7 @@ class Training:
             
         '''
         if self.init:
-            self.optimizer    = optimizer
+            self.optimizer = optimizer
             self.parent_obj.build_train_dataset(train_filenames, batch_size)
             self.parent_obj.build_valid_dataset(valid_filenames, batch_size)
             self.parent_obj.init_model(n_classes, box_shapes)

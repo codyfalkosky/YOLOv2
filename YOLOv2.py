@@ -9,6 +9,10 @@ from .predicting import Predicting
 
 
 class YOLOv2:
+    if tf.__version__ >= "2.16":
+        raise AssertionError(
+            f'YOLOv2 package requires tf.__version__ >= "2.16" you have {tf.__version__}'
+        )
     def __init__(self): 
         self.predicting = Predicting(self)
 
@@ -41,7 +45,7 @@ class YOLOv2:
         to train YOLOv2 model
 
         Args:
-            fit_params (dictionary) : parameters for training like 
+            fit_params (dictionary) : parameters for training
             {
                 filenames (list): ['path/to/1.tfrecord', 'path/to/2.tfrecord' ...]
                     see training.py for more on tfrecords
@@ -108,8 +112,8 @@ class YOLOv2:
         x = self.predicting.predict(x)
         return x
 
-    def to_object_encoder(self, image_paths):
-        return self.predicting.to_object_encoder(image_paths)
+    # def to_object_encoder(self, image_paths):
+    #     return self.predicting.to_object_encoder(image_paths)
 
 
 # +
