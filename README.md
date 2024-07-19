@@ -94,6 +94,10 @@ yolov2.predict_draw_save_video(list_of_image_paths, 'path/to/output.mp4')
 
 Result:
 
+https://github.com/user-attachments/assets/7402d0ab-6868-44a3-b5c7-ba869a16227a
+
+
+
 
 
 <video src='./video/yolo_2.mp4' width=400 autoplay loop title='actual model output from this model!'></video>
