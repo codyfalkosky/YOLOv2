@@ -25,6 +25,9 @@ https://github.com/user-attachments/assets/0d488225-86c9-4917-949c-2286e6d085c9
 
 Yellow for Bus, Red for Vehicle
 
+TRY IT OUT!  
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1QLhHK-xgiYK_WpvlzdPuVc-7vT-BNU-5?usp=sharing)
+
 <br>
 <div id='2'></div>
 
@@ -44,8 +47,8 @@ git clone https://github.com/codyfalkosky/YOLOv2.git
 ***
 Loading a YOLO model is easy (if you already have the weights)!  Just pass a model_params dict to the .load_model method of a YOLOv2 instance.
 
-```bash
-import Yolov2
+```python
+from YOLOv2 import YOLOv2
 
 yolov2 = YOLOv2()
 

@@ -112,6 +112,18 @@ class YOLOv2:
         x = self.predicting.predict(x)
         return x
 
+    def predict_draw_save_video(self, image_paths, save_path):
+        '''
+        Takes list of images intended to be single frames of 15fps video and 
+            draws YOLOv2 output to each frame then saves to save_path.
+
+        Args:
+            images_paths (list) : ["path/to/img1.jpg", "path/to/img2.jpg", ...]
+            save_dir (str) : "path/to/video.mp4" # full save path including filename
+        '''
+        x = self.predicting.predict_draw_save_video(image_paths, save_path)
+        return x
+
     # def to_object_encoder(self, image_paths):
     #     return self.predicting.to_object_encoder(image_paths)
 
