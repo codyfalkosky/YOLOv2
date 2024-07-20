@@ -13,7 +13,7 @@
 | [**Boxes On Video**](#5)
 | [**Boxes On Image**](#6)
 | [**Notable Implementations**](#7)
-| [**More**](#7)
+| [**More**](#8)
 <div id='1'></div>
 
 ## Overview
