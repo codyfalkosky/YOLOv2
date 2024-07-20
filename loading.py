@@ -3,7 +3,7 @@ import tensorflow as tf
 
 class Loading:
     '''
-    class for loading pretrained YOLOv2 model
+    class for loading pre-trained YOLOv2 model
     '''
     def __init__(self, parent_obj):
         '''

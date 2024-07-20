@@ -4,7 +4,7 @@ import glob
 
 class Data:
     '''
-    creates and stores distributed TFRecords Dataset for yolo training task
+    Creates and stores distributed TFRecords Dataset for yolo training task
     access data at data.data
 
     Args:

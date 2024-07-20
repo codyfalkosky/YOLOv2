@@ -13,13 +13,13 @@ class Boxes:
         Compares all boxes_1 and boxes_2 with IoU score
     
         Args:
-            bboxes_1 (tensor) : of shape (n_boxes, box_coords)
+            bboxes_1 (tensor): of shape (n_boxes, box_coords)
                 box_coords are to be in format [x_min, y_min, x_max, y_max]
-            bboxes_2 (tensor) : of shape (n_boxes, box_coords)
+            bboxes_2 (tensor): of shape (n_boxes, box_coords)
                 box_coords are to be in format [x_min, y_min, x_max, y_max]
     
         Returns:
-            bboxes_iou (tensor) : of shape (n_bboxes_2, n_bboxes_1)
+            bboxes_iou (tensor): of shape (n_bboxes_2, n_bboxes_1)
                 axis 1 positions are equal to all bbox_1 boxes
                 axis 2 positions are equal to all boox_2 boxes
         
@@ -65,7 +65,7 @@ class Boxes:
         # iou
         bboxes_iou = intersection_area / union_area
     
-        # transpose final dimensions to match input order (i.e. bboxes_1 are indexed on axis=1)
+        # transpose final dimensions to match input order (i.e., bboxes_1 are indexed on axis=1)
         bboxes_iou = tf.transpose(bboxes_iou, perm=[1, 0])
     
         # return bboxes_iou

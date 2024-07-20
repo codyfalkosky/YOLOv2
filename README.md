@@ -18,7 +18,7 @@
 
 ## Overview
 ***
-YOLOv2 is a full TensorFlow implementation of the YOLOv2 algorithm as described in the paper "YOLO9000: Better, Faster, Stronger."  It also includes a fully trained model, and dataset I captured and labeled from my apartment window. 
+YOLOv2 is a full TensorFlow implementation of the YOLOv2 algorithm as described in the paper "YOLO9000: Better, Faster, Stronger."  It also includes a fully trained model and dataset I captured and labeled from my apartment window. 
 
 
 https://github.com/user-attachments/assets/0d488225-86c9-4917-949c-2286e6d085c9
@@ -30,7 +30,7 @@ Yellow for Bus, Red for Vehicle
 
 ## Download
 ***
-To download just clone my repo!
+To download, just clone my repo!
 
 ```bash
 git clone https://github.com/codyfalkosky/YOLOv2.git
