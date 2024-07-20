@@ -10,9 +10,9 @@
 | [**Download**](#2)
 | [**Load a Model**](#3)
 | [**Train a Model**](#4)
-| [**Boxes On Video**](#4)
-| [**Boxes On Image**](#5)
-| [**Noteable Implementations**](#6)
+| [**Boxes On Video**](#5)
+| [**Boxes On Image**](#6)
+| [**Noteable Implementations**](#7)
 | [**More**](#7)
 <div id='1'></div>
 
@@ -28,6 +28,7 @@ Yellow for Bus, Red for Vehicle
 <br>
 <div id='2'></div>
 
+
 ## Download
 ***
 To download, just clone my repo!
@@ -38,9 +39,10 @@ git clone https://github.com/codyfalkosky/YOLOv2.git
 
 <div id='3'></div>
 
+
 ## Load a Model
 ***
-Loading a yolo model is easy!  (if you already have the weights).  Just pass a model_params dict to the .load_model method of a YOLOv2 instance.
+Loading a YOLO model is easy (if you already have the weights)!  Just pass a model_params dict to the .load_model method of a YOLOv2 instance.
 
 ```bash
 import Yolov2
@@ -56,6 +58,7 @@ model_params = dict(
 yolov2.load_model(model_params)
 ```
 <div id='4'></div>
+
 
 ## Train a Model
 ***
@@ -80,7 +83,8 @@ fit_params = dict(
 yolov2.fit(fit_params)
 ```
 
-<div id='5'></div>
+<div id='6'></div>
+
 
 ## Draw Boxes on a Series of Images and Output a Video
 ***
@@ -108,6 +112,7 @@ https://github.com/user-attachments/assets/7402d0ab-6868-44a3-b5c7-ba869a16227a
 
 <div id='5'></div>
 
+
 ## Draw Boxes on Images
 ***
 
@@ -128,9 +133,9 @@ Result:
 <img src='./images/traffic3.png' width=400></img>
 <img src='./images/traffic4.png' width=400></img>
 
-<div id='6'></div>
+<div id='7'></div>
 
-## Noteable Implementations
+## Notable Implementations
 ***
 
 Building YOLOv2 fully in TensorFlow was an amazing exercise.  Here are some notable implementation details.
@@ -151,13 +156,13 @@ The YOLOv2 fully convolutional update, with anchor prior generation and output t
 Efficient data pipeline using TFRecords.  
 [**Link**](./data.py)
 
-<div id='7'></div>
+<div id='8'></div>
 
 ## More
 ***
 
 ### Selecting Anchor Prior Sizes
-Using kmeans clustering on log scaled anchor box annotations to select optimal anchorbox priors.  
+Using kmeans clustering on log scaled anchor box annotations to select optimal anchor box priors.  
 [**Link**](./more/kmeans_clustering_for_anchorbox_priors.ipynb)
 
 ### Data Prep
@@ -169,7 +174,7 @@ I attached a small camera outside of my apartment window and connected it to a s
 [**Link**](./more/LedgeCamCapture.ipynb)
 
 ### Dataset
-Dataset available on hugging face datasets.
+Dataset available on huggingface datasets.
 ```python
 from datasets import load_dataset
 
