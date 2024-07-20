@@ -3,6 +3,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.animation import FuncAnimation
+import time
 
 
 # +
@@ -255,13 +256,21 @@ class Predicting:
             images_paths (list) : ["path/to/img1.jpg", "path/to/img2.jpg", ...]
             save_dir (str) : "path/to/video.mp4" # full save path including filename
         '''
-        
+        print('loading images')
+        s = time.time()
         batched = self.batch_images_to_batch_tensor(image_paths)
-        print('images loaded')
+        print(f'    completed: {time.time() - s} seconds')
+
+        print('forward pass')
+        s = time.time()
         out     = self.parent_obj(batched)
-        print('forward pass complete')
+        print(f'    completed: {time.time() - s} seconds')
+        
         batch   = range(0, len(out))
+        
         print('drawing boxes')
+        s = time.time()
+        
         fig, ax = plt.subplots(figsize=(19, 10))
         ax.axis('off')
         fig.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
@@ -286,7 +295,7 @@ class Predicting:
 
         ani.save(save_path, fps=15)
         plt.close()
-        
+        print(f'    completed: {time.time() - s} seconds')
 
 # -
 
