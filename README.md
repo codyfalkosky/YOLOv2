@@ -12,7 +12,7 @@
 | [**Train a Model**](#4)
 | [**Boxes On Video**](#5)
 | [**Boxes On Image**](#6)
-| [**Noteable Implementations**](#7)
+| [**Notable Implementations**](#7)
 | [**More**](#7)
 <div id='1'></div>
 
@@ -83,7 +83,7 @@ fit_params = dict(
 yolov2.fit(fit_params)
 ```
 
-<div id='6'></div>
+<div id='5'></div>
 
 
 ## Draw Boxes on a Series of Images and Output a Video
@@ -110,7 +110,7 @@ https://github.com/user-attachments/assets/7402d0ab-6868-44a3-b5c7-ba869a16227a
 <video src='./video/yolo_5.mp4' width=400 autoplay loop title='actual model output from this model!'></video>
 <video src='./video/yolo_4.mp4' width=400 autoplay loop title='actual model output from this model!'></video>
 
-<div id='5'></div>
+<div id='6'></div>
 
 
 ## Draw Boxes on Images
