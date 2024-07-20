@@ -8,7 +8,7 @@ from matplotlib.animation import FuncAnimation
 # +
 class Predicting:
     '''
-    class for all forward pass inference based operations in YOLOv2
+    class for all forward pass inference-based operations in YOLOv2
     '''
     def __init__(self, parent_obj, colors={0:'red', 1:'orange'}):
         '''
@@ -164,7 +164,7 @@ class Predicting:
         # mask for masking out padding
         mask = tf.range(30) < valid_indicies[:, None]
     
-        # get image index for correponding object
+        # get image index for corresponding object
         batch_numbers    = tf.where(mask)
         batch_numbers, _ = tf.split(batch_numbers, 2, axis=1)
         batch_numbers    = tf.cast(batch_numbers, tf.int32)

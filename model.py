@@ -26,7 +26,7 @@ def build_anchor_priors(h, w, box_sizes):
     anchor_priors = np.zeros([h, w, n_anchors, 4])
 
     def _get_anchors_pxpypwph(h, w, pw, ph):
-        'calulate 1 bbox shape of pxpypwph anchors'
+        'calculate 1 bbox shape of pxpypwph anchors'
         pxpy = np.stack(np.meshgrid(range(w), range(h), indexing='xy'), axis=-1)
         pwph = np.broadcast_to(np.array([[[pw, ph]]]), (h, w, 2))
         return np.concatenate([pxpy, pwph], axis=-1)
@@ -79,7 +79,7 @@ def transform_output(model_out, anchor_priors):
 
 class Yolov2Model:
     '''
-    Defines will YOLOv2 model with anchor boxes and output transformations
+    Defines the YOLOv2 model with anchor boxes and output transformations
     '''
     def __init__(self, n_classes, anchor_prior_shapes):
         '''

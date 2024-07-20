@@ -81,7 +81,7 @@ class Training:
 
     def plot_loss(self):
         '''
-        for visualization during trianing
+        for visualization during training
         displays train and valid loss
         '''
         clear_output(wait=True)
@@ -218,7 +218,7 @@ class Training:
             self.valid_loss.append(self.valid_metric.result().numpy())
             self.valid_metric.reset_states()
     
-            # save best model based on valid loss
+            # save the best model based on valid loss
             self.save_best(save_best_folder, save_below)
 
             # save optimizer and model checkpoint

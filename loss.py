@@ -9,12 +9,12 @@ import glob
 
 class YoloLoss:
     '''
-    all loss for yolo calculations
+    all loss for YOLO calculations
     '''
     
     def __init__(self, model_out, batch_boxes):
         '''
-        initalized yolo_loss to model specs
+        initialized yolo_loss to model specs
 
         Args:
             model_out (tensor) : model output shape (batch, 13, 13, n_anchor_boxes, 5+n_classes)
@@ -47,7 +47,7 @@ class YoloLoss:
         
     def _package(self, model_out, batch_boxes):
         '''
-        flattens model_output and labeled boxes in to (b, -1) shape tensor for accelerated computation
+        flattens model_output and labeled boxes into (b, -1) shape tensor for accelerated computation
 
         Args:
             model_out (tensor) : model output shape (batch, 13, 13, n_anchor_boxes, 5+n_classes)
