@@ -9,10 +9,10 @@ from .predicting import Predicting
 
 
 class YOLOv2:
-    if tf.__version__ >= "2.16":
-        raise AssertionError(
-            f'YOLOv2 package requires tf.__version__ >= "2.16" you have {tf.__version__}'
-        )
+    # if tf.__version__ >= "2.16":
+    #     raise AssertionError(
+    #         f'YOLOv2 package requires tf.__version__ >= "2.16" you have {tf.__version__}'
+    #     )
     def __init__(self): 
         self.predicting = Predicting(self)
 
